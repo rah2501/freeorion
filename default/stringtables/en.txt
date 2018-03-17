@@ -4801,6 +4801,12 @@ Turn
 NO_TECHS_RESEARCHED
 No Techs Researched
 
+ADOPTED_POLICIES
+'''Adopted Policies: '''
+
+NO_POLICIES_ADOPTED
+No Policies AdoptedAVAILABLE_PARTS
+
 AVAILABLE_PARTS
 '''Available Parts: '''
 
