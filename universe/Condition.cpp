@@ -6782,9 +6782,17 @@ unsigned int EmpireHasAdoptedPolicy::GetCheckSum() const {
 ///////////////////////////////////////////////////////////
 // OwnerHasTech                                          //
 ///////////////////////////////////////////////////////////
+OwnerHasTech::OwnerHasTech(std::unique_ptr<ValueRef::ValueRefBase<int>>&& empire_id,
+                           std::unique_ptr<ValueRef::ValueRefBase<std::string>>&& name) :
+    ConditionBase(),
+    m_name(std::move(name)),
+    m_empire_id(std::move(empire_id))
+{}
+
 OwnerHasTech::OwnerHasTech(std::unique_ptr<ValueRef::ValueRefBase<std::string>>&& name) :
     ConditionBase(),
-    m_name(std::move(name))
+    m_name(std::move(name)),
+    m_empire_id(nullptr)
 {}
 
 bool OwnerHasTech::operator==(const ConditionBase& rhs) const {
@@ -6900,15 +6908,25 @@ unsigned int OwnerHasTech::GetCheckSum() const {
 ///////////////////////////////////////////////////////////
 // OwnerHasBuildingTypeAvailable                         //
 ///////////////////////////////////////////////////////////
+OwnerHasBuildingTypeAvailable::OwnerHasBuildingTypeAvailable(
+    std::unique_ptr<ValueRef::ValueRefBase<int>>&& empire_id,
+    std::unique_ptr<ValueRef::ValueRefBase<std::string>>&& name) :
+    ConditionBase(),
+    m_name(std::move(name)),
+    m_empire_id(std::move(empire_id))
+{}
+
 OwnerHasBuildingTypeAvailable::OwnerHasBuildingTypeAvailable(const std::string& name) :
     ConditionBase(),
     // TODO: Use std::make_unique when adopting C++14
-    m_name(new ValueRef::Constant<std::string>(name))
+    m_name(new ValueRef::Constant<std::string>(name)),
+    m_empire_id(nullptr)
 {}
 
 OwnerHasBuildingTypeAvailable::OwnerHasBuildingTypeAvailable(std::unique_ptr<ValueRef::ValueRefBase<std::string>>&& name) :
     ConditionBase(),
-    m_name(std::move(name))
+    m_name(std::move(name)),
+    m_empire_id(nullptr)
 {}
 
 bool OwnerHasBuildingTypeAvailable::operator==(const ConditionBase& rhs) const {
@@ -7019,15 +7037,25 @@ unsigned int OwnerHasBuildingTypeAvailable::GetCheckSum() const {
 ///////////////////////////////////////////////////////////
 // OwnerHasShipDesignAvailable                           //
 ///////////////////////////////////////////////////////////
+OwnerHasShipDesignAvailable::OwnerHasShipDesignAvailable(
+    std::unique_ptr<ValueRef::ValueRefBase<int>>&& empire_id,
+    std::unique_ptr<ValueRef::ValueRefBase<int>>&& id) :
+    ConditionBase(),
+    m_id(std::move(id)),
+    m_empire_id(std::move(empire_id))
+{}
+
 OwnerHasShipDesignAvailable::OwnerHasShipDesignAvailable(int id) :
     ConditionBase(),
     // TODO: Use std::make_unique when adopting C++14
-    m_id(new ValueRef::Constant<int>(id))
+    m_id(new ValueRef::Constant<int>(id)),
+    m_empire_id(nullptr)
 {}
 
 OwnerHasShipDesignAvailable::OwnerHasShipDesignAvailable(std::unique_ptr<ValueRef::ValueRefBase<int>>&& id) :
     ConditionBase(),
-    m_id(std::move(id))
+    m_id(std::move(id)),
+    m_empire_id(nullptr)
 {}
 
 bool OwnerHasShipDesignAvailable::operator==(const ConditionBase& rhs) const {
@@ -7138,15 +7166,25 @@ unsigned int OwnerHasShipDesignAvailable::GetCheckSum() const {
 ///////////////////////////////////////////////////////////
 // OwnerHasShipPartAvailable                             //
 ///////////////////////////////////////////////////////////
+OwnerHasShipPartAvailable::OwnerHasShipPartAvailable(
+    std::unique_ptr<ValueRef::ValueRefBase<int>>&& empire_id,
+    std::unique_ptr<ValueRef::ValueRefBase<std::string>>&& name) :
+    ConditionBase(),
+    m_name(std::move(name)),
+    m_empire_id(std::move(empire_id))
+{}
+
 OwnerHasShipPartAvailable::OwnerHasShipPartAvailable(const std::string& name) :
     ConditionBase(),
     // TODO: Use std::make_unique when adopting C++14
-    m_name(new ValueRef::Constant<std::string>(name))
+    m_name(new ValueRef::Constant<std::string>(name)),
+    m_empire_id(nullptr)
 {}
 
 OwnerHasShipPartAvailable::OwnerHasShipPartAvailable(std::unique_ptr<ValueRef::ValueRefBase<std::string>>&& name) :
     ConditionBase(),
-    m_name(std::move(name))
+    m_name(std::move(name)),
+    m_empire_id(nullptr)
 {}
 
 bool OwnerHasShipPartAvailable::operator==(const ConditionBase& rhs) const {
