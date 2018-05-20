@@ -2207,8 +2207,8 @@ HasSpecial::HasSpecial() :
     m_name(nullptr),
     m_capacity_low(nullptr),
     m_capacity_high(nullptr),
-    m_since_turn_low(),
-    m_since_turn_high()
+    m_since_turn_low(nullptr),
+    m_since_turn_high(nullptr)
 {}
 
 HasSpecial::HasSpecial(std::unique_ptr<ValueRef::ValueRefBase<std::string>>&& name) :
@@ -2216,8 +2216,17 @@ HasSpecial::HasSpecial(std::unique_ptr<ValueRef::ValueRefBase<std::string>>&& na
     m_name(std::move(name)),
     m_capacity_low(nullptr),
     m_capacity_high(nullptr),
-    m_since_turn_low(),
-    m_since_turn_high()
+    m_since_turn_low(nullptr),
+    m_since_turn_high(nullptr)
+{}
+
+HasSpecial::HasSpecial(ValueRef::ValueRefBase<std::string>* name) :
+    ConditionBase(),
+    m_name(name),
+    m_capacity_low(nullptr),
+    m_capacity_high(nullptr),
+    m_since_turn_low(nullptr),
+    m_since_turn_high(nullptr)
 {}
 
 HasSpecial::HasSpecial(std::unique_ptr<ValueRef::ValueRefBase<std::string>>&& name,
@@ -6460,6 +6469,18 @@ EmpireStockpileValue::EmpireStockpileValue(ResourceType stockpile,
                                            std::unique_ptr<ValueRef::ValueRefBase<double>>&& low,
                                            std::unique_ptr<ValueRef::ValueRefBase<double>>&& high) :
     ConditionBase(),
+    m_empire_id(nullptr),
+    m_stockpile(stockpile),
+    m_low(std::move(low)),
+    m_high(std::move(high))
+{}
+
+EmpireStockpileValue::EmpireStockpileValue(std::unique_ptr<ValueRef::ValueRefBase<int>>&& empire_id,
+                                           ResourceType stockpile,
+                                           std::unique_ptr<ValueRef::ValueRefBase<double>>&& low,
+                                           std::unique_ptr<ValueRef::ValueRefBase<double>>&& high) :
+    ConditionBase(),
+    m_empire_id(std::move(empire_id)),
     m_stockpile(stockpile),
     m_low(std::move(low)),
     m_high(std::move(high))
@@ -6472,6 +6493,9 @@ bool EmpireStockpileValue::operator==(const ConditionBase& rhs) const {
         return false;
 
     const EmpireStockpileValue& rhs_ = static_cast<const EmpireStockpileValue&>(rhs);
+
+    if (m_empire_id != rhs_.m_empire_id)
+        return false;
 
     if (m_stockpile != rhs_.m_stockpile)
         return false;
@@ -6534,14 +6558,23 @@ void EmpireStockpileValue::Eval(const ScriptingContext& parent_context,
     }
 }
 
-bool EmpireStockpileValue::RootCandidateInvariant() const
-{ return (m_low->RootCandidateInvariant() && m_high->RootCandidateInvariant()); }
+bool EmpireStockpileValue::RootCandidateInvariant() const {
+    return (!m_empire_id || m_empire_id->RootCandidateInvariant()) &&
+           (!m_low || m_low->RootCandidateInvariant()) &&
+           (!m_high || m_high->RootCandidateInvariant());
+}
 
-bool EmpireStockpileValue::TargetInvariant() const
-{ return (m_low->TargetInvariant() && m_high->TargetInvariant()); }
+bool EmpireStockpileValue::TargetInvariant() const {
+    return (!m_empire_id || m_empire_id->TargetInvariant()) &&
+           (!m_low || m_low->TargetInvariant()) &&
+           (!m_high || m_high->TargetInvariant());
+}
 
-bool EmpireStockpileValue::SourceInvariant() const
-{ return (m_low->SourceInvariant() && m_high->SourceInvariant()); }
+bool EmpireStockpileValue::SourceInvariant() const {
+    return (!m_empire_id || m_empire_id->SourceInvariant()) &&
+           (!m_low || m_low->SourceInvariant()) &&
+           (!m_high || m_high->SourceInvariant());
+}
 
 std::string EmpireStockpileValue::Description(bool negated/* = false*/) const {
     std::string low_str = m_low->ConstantExpr() ?
@@ -6613,7 +6646,8 @@ EmpireHasAdoptedPolicy::EmpireHasAdoptedPolicy(std::unique_ptr<ValueRef::ValueRe
 
 EmpireHasAdoptedPolicy::EmpireHasAdoptedPolicy(std::unique_ptr<ValueRef::ValueRefBase<std::string>>&& name) :
     ConditionBase(),
-    m_name(std::move(name))
+    m_name(std::move(name)),
+    m_empire_id(nullptr)
 {}
 
 EmpireHasAdoptedPolicy::~EmpireHasAdoptedPolicy()
@@ -6626,6 +6660,9 @@ bool EmpireHasAdoptedPolicy::operator==(const ConditionBase& rhs) const {
         return false;
 
     const EmpireHasAdoptedPolicy& rhs_ = static_cast<const EmpireHasAdoptedPolicy&>(rhs);
+
+    if (m_empire_id != rhs_.m_empire_id)
+        return false;
 
     CHECK_COND_VREF_MEMBER(m_name)
 
@@ -6678,14 +6715,20 @@ void EmpireHasAdoptedPolicy::Eval(const ScriptingContext& parent_context,
     }
 }
 
-bool EmpireHasAdoptedPolicy::RootCandidateInvariant() const
-{ return !m_name || m_name->RootCandidateInvariant(); }
+bool EmpireHasAdoptedPolicy::RootCandidateInvariant() const {
+    return (!m_empire_id || m_empire_id->RootCandidateInvariant()) &&
+           (!m_name || m_name->RootCandidateInvariant());
+}
 
-bool EmpireHasAdoptedPolicy::TargetInvariant() const
-{ return !m_name || m_name->TargetInvariant(); }
+bool EmpireHasAdoptedPolicy::TargetInvariant() const {
+    return (!m_empire_id || m_empire_id->TargetInvariant()) &&
+           (!m_name || m_name->TargetInvariant());
+}
 
-bool EmpireHasAdoptedPolicy::SourceInvariant() const
-{ return !m_name || m_name->SourceInvariant(); }
+bool EmpireHasAdoptedPolicy::SourceInvariant() const {
+    return (!m_empire_id || m_empire_id->SourceInvariant()) &&
+           (!m_name || m_name->SourceInvariant());
+}
 
 std::string EmpireHasAdoptedPolicy::Description(bool negated/* = false*/) const {
     std::string name_str;
