@@ -97,21 +97,13 @@ namespace parse { namespace detail {
                     deconstruct_movable_(_2, _pass))) ]
             ;
 
-        owner_has_shippart_available
-            =   (tok.OwnerHasShipPartAvailable_
-                 >>  (label(tok.Name_)
-                      > string_grammar [ _val = construct_movable_(new_<Condition::OwnerHasShipPartAvailable>(
-                              deconstruct_movable_(_1, _pass))) ]
-                     )
-                )
-            ;
-
         empire_has_buildingtype_available1
             = (
                     omit_[tok.EmpireHasBuildingAvailable_]
                  >  label(tok.Name_) > string_grammar
               ) [ _val = construct_movable_(new_<Condition::OwnerHasBuildingTypeAvailable>(
                     deconstruct_movable_(_1, _pass))) ]
+            ;
 
         empire_has_buildingtype_available2
             = (
